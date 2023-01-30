@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     private enum State {idle,running,jumping,falling,hurt}
     private State state  = State.idle;
     private Collider2D coll;
+    private AudioSource footstep;
 
     public int cherries =0;
 
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         coll = GetComponent<Collider2D>();
+        footstep = GetComponent<AudioSource>();
     
     }
 
@@ -93,7 +95,7 @@ public class PlayerController : MonoBehaviour
            
         }
 
-        if(Input.GetButtonDown("Jump") && coll.IsTouchingLayers())
+        if(Input.GetButtonDown("Jump") && coll.IsTouchingLayers(ground))
         {
             Jump();
         }
