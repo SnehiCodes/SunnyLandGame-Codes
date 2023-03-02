@@ -4,96 +4,100 @@ using UnityEngine;
 
 public class bunny : Enemy
 {
-    [SerializeField] private float leftCap ;
-    [SerializeField] private float rightCap ;
-     
-    [SerializeField] private float jumpLength = 10f;
-    [SerializeField] private float jumpHeight = 15f;
+    [SerializeField] private float leftCap;
+    [SerializeField] private float rightCap;
+    [SerializeField] private float jumpLength =10f;
+    [SerializeField] private float jumpHeight =15f;
     [SerializeField] private LayerMask ground;
-    private Collider2D coll;
-
     
+
+    private Collider2D coll;
+    //private Rigidbody2D rb;
+
     private bool facingLeft = true;
 
     protected override void Start()
     {
         base.Start();
         coll = GetComponent<Collider2D>();
-        
+        //rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
-    {
-        //transform.localScale = new Vector3(-1,1);
-        if(anim.GetBool("Jumping"))
-        {
-            if(rb.velocity.y<.1)
+{
+       if(anim.GetBool("Jumping"))
+       {
+            if (rb.velocity.y <.1)
             {
                 anim.SetBool("Falling",true);
                 anim.SetBool("Jumping",false);
             }
-        }
+       }
+       if(coll.IsTouchingLayers(ground) && anim.GetBool("Falling"))
+       {
+        anim.SetBool("Falling",false);
+       }
+}
 
-        if(coll.IsTouchingLayers(ground) && anim.GetBool("Falling"))
-        {
-            anim.SetBool("Falling",false);
-        }
-    }
-
-    private void Move()
-    {
-        
-        if(facingLeft)
+private void Move()
+{
+     if(facingLeft)
         {
             if(transform.position.x>leftCap)
+        {
+            if(transform.localScale.x !=1)
+            {
+                transform.localScale = new Vector3(1,1);
+            }
+            if(coll.IsTouchingLayers(ground))
+            {
+                rb.velocity = new Vector2(-jumpLength,jumpHeight);
+                anim.SetBool("Jumping",true);
+            }
+        }
+        else
+        {
+            facingLeft = false;
+        }
         
-            {
-                if(transform.localScale.x != -1)
-                {
-                    transform.localScale = new Vector3(-1,1);
-                }
 
-                if(coll.IsTouchingLayers(ground))
-                {
-                    rb.velocity = new Vector2(-jumpLength,jumpHeight);
-                    anim.SetBool("Jumping",true) ;
-                }
+        
+    }
+    else
+    {
+        if(transform.position.x<rightCap)
+        {
+            if(transform.localScale.x !=-1)
+            {
+                transform.localScale = new Vector3(-1,1);
             }
-            else
+            if(coll.IsTouchingLayers(ground))
             {
-                facingLeft = false;
-            }
-        }
-
-
-            else
-            {
-                if(transform.position.x<rightCap)
-                {
-                    if(transform.localScale.x != 1)
-                {
-                    transform.localScale = new Vector3(1,1);
-                }
-
-                
-                
-
-                if(coll.IsTouchingLayers(ground))
-                {
-                    rb.velocity = new Vector2(jumpLength,jumpHeight);
-                    anim.SetBool("Jumping",true) ;
-                }
-
-                
-            }
-               else
-            {
-                facingLeft = true;
+                rb.velocity = new Vector2(jumpLength,jumpHeight);
+                anim.SetBool("Jumping",true);
             }
         }
-    } 
+        else
+        {
+            facingLeft = true;
+        }
+    }
+}
+
+public void JumpedOn()
+{
+    anim.SetTrigger("Death");
+}
+
+private void Death()
+{
+    Destroy(this.gameObject);
+}
+
+}
 
    
 
     
-}
+
+
