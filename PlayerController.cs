@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,15 +9,16 @@ public class PlayerController : MonoBehaviour
     private enum State {idle,running,jumping,falling,hurt}
     private State state  = State.idle;
     private Collider2D coll;
-    private AudioSource footstep;
+    
 
-    public int cherries =0;
-
+    [SerializeField]private int cherries =0;
+    //[SerializeField]private TMP cherryText;
     [SerializeField]private LayerMask ground;
     [SerializeField]private float speed = 5f;
     [SerializeField]private float  jumpForce = 10f;
-    [SerializeField]private float  hurtForce = 10f;    
-
+    [SerializeField]private float  hurtForce = 10f;  
+    [SerializeField]private AudioSource cherry;  
+    [SerializeField]private AudioSource footstep;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -43,8 +44,11 @@ public class PlayerController : MonoBehaviour
     {
         if(collision.tag == "Collectible")
         {
+            cherry.Play();
             Destroy(collision.gameObject);
             cherries +=1;
+            scorescript.scoreValue +=1;
+           // cherryText.text = cherries.ToString();
         }
     }
 
@@ -139,5 +143,10 @@ public class PlayerController : MonoBehaviour
             state = State.idle;
         }
         
+    }
+
+    private void Footstep()
+    {
+        footstep.Play();
     }
 }
