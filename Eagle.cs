@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Eagle : Enemy
 {
-    
+    //private Rigidbody2D rb;
 }
